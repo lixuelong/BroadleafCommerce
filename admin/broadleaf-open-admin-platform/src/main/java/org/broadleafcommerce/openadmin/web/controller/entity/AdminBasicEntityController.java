@@ -62,6 +62,7 @@ import org.broadleafcommerce.openadmin.server.service.persistence.extension.Ador
 import org.broadleafcommerce.openadmin.server.service.persistence.module.BasicPersistenceModule;
 import org.broadleafcommerce.openadmin.web.controller.AdminAbstractController;
 import org.broadleafcommerce.openadmin.web.controller.modal.ModalHeaderType;
+import org.broadleafcommerce.openadmin.web.dao.StaticAssetDaoMultipleCatalogExtensionManager;
 import org.broadleafcommerce.openadmin.web.editor.NonNullBooleanEditor;
 import org.broadleafcommerce.openadmin.web.form.component.DefaultListGridActions;
 import org.broadleafcommerce.openadmin.web.form.component.ListGrid;
@@ -146,6 +147,9 @@ public class AdminBasicEntityController extends AdminAbstractController {
     
     @Resource(name = "blGenericEntityService")
     protected GenericEntityService genericEntityService;
+
+    @Resource(name = "blStaticAssetDaoMultipleCatalogExtensionManager")
+    protected StaticAssetDaoMultipleCatalogExtensionManager staticAssetDaoMultipleCatalogExtensionManager;
 
     // ******************************************
     // REQUEST-MAPPING BOUND CONTROLLER METHODS *
@@ -1222,6 +1226,9 @@ public class AdminBasicEntityController extends AdminAbstractController {
         declareShouldIgnoreAdditionStatusFilter();
         Entity entity = service.getRecord(ppr, id, mainMetadata, false).getDynamicResultSet().getRecords()[0];
         service.clearEntityManager();
+
+        staticAssetDaoMultipleCatalogExtensionManager.getProxy().setCurrentCatalog(entity);
+
         // First, we must save the collection entity
         PersistenceResponse persistenceResponse = service.addSubCollectionEntity(entityForm, mainMetadata, collectionProperty, entity, sectionCrumbs);
         Entity savedEntity = persistenceResponse.getEntity();
